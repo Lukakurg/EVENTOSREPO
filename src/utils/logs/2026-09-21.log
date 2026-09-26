@@ -1,0 +1,5 @@
+[2026-09-21T23:47:09.003Z] METHOD: GET /public/events-ext 
+[2026-09-21T23:48:48.629Z] METHOD: GET /public/events-ext 
+[2026-09-21T23:51:00.360Z] METHOD: GET /v1/events 
+[2026-09-21T23:51:04.459Z] METHOD: POST /v1/auth/login 
+[2026-09-21T23:51:08.320Z] METHOD: GET /v1/events 
