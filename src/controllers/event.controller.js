@@ -41,6 +41,11 @@ const { body, user} = req;
 
 try{
 await createEvent(body, user.id)
+try {
+    await sendEmail(body.nombre);
+} catch (mailError) {
+    console.error("No se pudo enviar el mail de notificación:", mailError);
+}
 res.status(201).json({
     message: "Evento creado",
 });
