@@ -5,24 +5,24 @@ const mailjet = Mailjet.apiConnect(
   process.env.MJ_APIKEY_PRIVATE
 );
 
-const sendEmail = async (expenseTitle) => {
+const sendEmail = async (eventTitle) => {
   try {
     const response = await mailjet.post("send", { version: "v3.1" }).request({
       Messages: [
         {
           From: {
-            Email: "mauronacimento777@gmail.com",
-            Name: "Mauro 1 Nacimento",
+            Email: "lucasrecoba3@gmail.com",
+            Name: "Lucas 1",
           },
           To: [
             {
-              Email: "nacirox@gmail.com",
-              Name: "Mauro 2 Nacimento",
+              Email: "lucasrecoba3@gmail.com",
+              Name: "Lucas 2",
             },
           ],
-          Subject: "Nuevo Gasto Creadao - " + expenseTitle,
-          TextPart: "Tienes un nuevo Gasto en tu lista de gastos",
-          HTMLPart: "Tienes un nuevo Gasto en tu lista de gastos",
+          Subject: "Nuevo Evento Creadao - " + eventTitle,
+          TextPart: "Tienes un nuevo evento en tu lista de eventos",
+          HTMLPart: "Tienes un nuevo evento en tu lista de eventos",
         },
       ],
     });

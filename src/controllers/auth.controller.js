@@ -31,7 +31,7 @@ const postAuthRegister = async (req, res) => {
 
     console.log("usuario encontrado: ", user)
     if(user){
-        return res.status(400).json({message: "Usuario creado"})
+        return res.status(400).json({message: "Usuario repetido"})
     }
 
     try{
