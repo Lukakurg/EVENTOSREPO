@@ -15,14 +15,6 @@ const authRouter = require("./routes/auth.router");
 const {generalLimiter} = require("./middlewares/rateLimit.middleware");
 const connecToRedis = require("./services/redis.service");
 
-(async () => {
-  try {
-    await connectMongoDB();
-  } catch (error) {
-    console.log("Ocurrio un error", error);
-    process.exit(1);
-  }
-})();
 
 (async () => {
   try {
@@ -50,7 +42,7 @@ app.use(dbMiddleware);
 
 app.use("/v1/auth", authRouter);
 app.use(authMiddleware);
-//app.use(generalLimiter);
+app.use(generalLimiter);
 app.use("/v1", router);
 
 app.use("/v1/uploads", uploadsRouter);
@@ -61,7 +53,10 @@ app.use("/v1/ai", iaRouter);
 module.exports = app;
 
 
+
+if(require.main === module) {
   const PORT = process.env.PORT;
   app.listen(PORT, () => {
     console.log(`Listen & serve PORT: ${PORT}`);
   });
+}
