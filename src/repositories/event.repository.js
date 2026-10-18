@@ -1,4 +1,8 @@
 const Event = require("../models/event.model");
+const connectToRedis = require("../services/redis.service");
+
+
+const _getEventsRedisKey = (userId, page, limit) => `userId:${userId}-events-page:${page}-limit:${limit}`;
 
 const getEvent = async(userId) => {
     const event = await Event.find({
@@ -16,11 +20,12 @@ const findEvent = async(eventId, userId) => {
 };
 
 const createEvent = async (eventData, userId) => {
-    const newEvent = new Event({
-        ...eventData,
-        userId
-    });
+    const newEvent = new Event({...eventData, userId});
     await newEvent.save();
+
+    const redisClient = connectToRedis();
+    redisClient.del(_getEventsRedisKey(userId, 1, 5));
+
     return newEvent;
 };
 
@@ -46,20 +51,32 @@ const updateEvent = async (eventId, userId, payload) => {
 };
 
 const getEventPaginated = async(userId, page = 1, limit = 5) => {
-    const skip = (page -1) * limit;
+    const redisClient = connectToRedis();
+    const redisKey = _getEventsRedisKey(userId, page, limit);
+    let cached = await redisClient.get(redisKey);
 
+    if (cached) {
+        console.log("obteniendo la informacion por Redis");
+        return cached;
+    }
+
+    console.log("obteniendo la informacion por Mongo db");
+    const skip = (page - 1) * limit;
     const [events, total] = await Promise.all([
         Event.find({userId}).skip(skip).limit(limit),
         Event.countDocuments({userId})
-    ])
+    ]);
 
-    return {
+    const result = {
       data: events,
       page,
       limit,
       total,
       totalPages: Math.ceil(total / limit)
-    }
+    };
+
+    redisClient.set(redisKey, JSON.stringify(result), {ex: 3600});
+    return result;
 }
 
 const countEventsById = async (userId) => Event.countDocuments({userId});

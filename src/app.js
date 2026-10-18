@@ -15,7 +15,25 @@ const authRouter = require("./routes/auth.router");
 const {generalLimiter} = require("./middlewares/rateLimit.middleware");
 const connecToRedis = require("./services/redis.service");
 
+(async () => {
+  try {
+    await connectMongoDB();
+  } catch (error) {
+    console.log("Ocurrio un error", error);
+    process.exit(1);
+  }
+})();
 
+(async () => {
+  try {
+    await connecToRedis();
+    console.log("Conexion a redis establecida correctamente");
+    
+  } catch (error) {
+    console.log("Ocurrio un error al conectarse a redis", error);
+    process.exit();
+  }
+})();
 
 
 app.use(loggerMiddleware);
@@ -42,9 +60,8 @@ app.use("/v1/ai", iaRouter);
 
 module.exports = app;
 
-if(require.main === module) {
+
   const PORT = process.env.PORT;
   app.listen(PORT, () => {
     console.log(`Listen & serve PORT: ${PORT}`);
   });
-}
