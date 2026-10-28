@@ -42,7 +42,7 @@ app.use(dbMiddleware);
 
 app.use("/v1/auth", authRouter);
 app.use(authMiddleware);
-app.use(generalLimiter);
+//app.use(generalLimiter);
 app.use("/v1", router);
 
 app.use("/v1/uploads", uploadsRouter);
