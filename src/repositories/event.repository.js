@@ -3,6 +3,15 @@ const connectToRedis = require("../services/redis.service");
 
 
 const _getEventsRedisKey = (userId, page, limit) => `userId:${userId}-events-page:${page}-limit:${limit}`;
+const _invalidateEventsCache = async (userId) => {
+    const redisClient = connectToRedis();
+    let cursor = "0";
+    do {
+        const [next, keys] = await redisClient.scan(cursor, { match: `userId:${userId}-events-*`, count: 100 });
+        if (keys.length) await redisClient.del(...keys);
+        cursor = String(next);
+    } while (cursor !== "0");
+};
 
 const getEvent = async(userId) => {
     const event = await Event.find({
@@ -23,14 +32,15 @@ const createEvent = async (eventData, userId) => {
     const newEvent = new Event({...eventData, userId});
     await newEvent.save();
 
-    const redisClient = connectToRedis();
-    redisClient.del(_getEventsRedisKey(userId, 1, 5));
+    await _invalidateEventsCache(userId);
 
     return newEvent;
 };
 
 const deleteEvent = async (eventId, userId) => {
-    return await Event.deleteOne({_id: eventId, userId: userId})
+   const result = await Event.deleteOne({_id: eventId, userId: userId});
+    await _invalidateEventsCache(userId);   
+    return result;
 };
 
 const updateEvent = async (eventId, userId, payload) => {
@@ -46,6 +56,7 @@ const updateEvent = async (eventId, userId, payload) => {
             event[key] = value;
         })
         await event.save();
+         await _invalidateEventsCache(userId);
     }
     return event;
 };
