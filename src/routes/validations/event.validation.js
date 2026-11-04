@@ -6,7 +6,7 @@ const eventValidation = Joi.object({
     fecha: Joi.date().required(),
     hora: Joi.string().required(),
     descripcion: Joi.string().optional(),
-    costo: Joi.number().positive().required(),
+    costo: Joi.number().min(0).required(),
     categoryId: Joi.string().required()
 });
 
