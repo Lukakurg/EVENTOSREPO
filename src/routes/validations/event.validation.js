@@ -7,7 +7,8 @@ const eventValidation = Joi.object({
     hora: Joi.string().required(),
     descripcion: Joi.string().optional(),
     costo: Joi.number().min(0).required(),
-    categoryId: Joi.string().required()
+    categoryId: Joi.string().required(),
+    imagen: Joi.string().uri().allow("").optional(),
 });
 
 

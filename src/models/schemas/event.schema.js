@@ -8,7 +8,8 @@ const eventSchema = new mongoose.Schema({
   hora: {type: String, required: true},
   descripcion:{type: String},
   costo: {type: Number, required: true},
-  categoryId: {type: mongoose.Schema.Types.ObjectId, ref:"Category"}
+  categoryId: {type: mongoose.Schema.Types.ObjectId, ref:"Category"},
+  imagen: {type: String}
 })
 
 module.exports = eventSchema
