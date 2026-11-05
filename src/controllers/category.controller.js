@@ -9,7 +9,7 @@ const {countEventByCategoryId} = require("../repositories/event.repository")
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 5;
         try{          
-            const result = await getCategoryPaginated(id, page, limit)
+            const result = await getCategoryPaginated(page, limit)
             res.status(200).json(result);
         }catch(error){
             res.status(500).json({message: "Ha ocurrido un error:", error});
@@ -20,7 +20,7 @@ const {countEventByCategoryId} = require("../repositories/event.repository")
 
     const getCategoryControllerId = async (req, res) => {
         const eventId = req.params.id;
-        const {id} = req.user;
+        
 if (req.user.rol !== "admin") return res.status(403).json({message: "Error"})
         try{
             const event = await findCategory(eventId, id)
