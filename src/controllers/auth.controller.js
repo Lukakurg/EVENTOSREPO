@@ -48,8 +48,7 @@ const postAuthRegister = async (req, res) => {
     const {id} = req.user;
 
     const usuario = await findUserById(id);
-console.log(usuario);
-    if (usuario.rol === "admin") 
+    if (usuario.rol === "admin")
         return res.status(403).json({ message: "Los admins no pueden cambiar de plan" });
     
     if (usuario.plan === "premium") 
@@ -58,7 +57,10 @@ console.log(usuario);
     const plan = { plan: "premium" };
     try {
         const user = await updateUser(id, plan);
-        res.status(200).json(user);
+        // El plan viaja dentro del token y postEventController lo lee de ahi,
+        // asi que firmamos uno nuevo; si no, el token viejo seguiria diciendo "plus"
+        const token = jwt.sign({id: user._id.toString(), username: user.name, rol: user.rol, plan: user.plan}, process.env.AUTH_SECRET_KEY, {expiresIn: '1h'})
+        res.status(200).json({ message: "Plan actualizado a premium", token });
     } catch(error) {
         res.status(500).json({ message: "Ha ocurrido un error: ", error });
     }
