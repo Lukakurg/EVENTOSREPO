@@ -9,7 +9,10 @@ const eventSchema = new mongoose.Schema({
   descripcion:{type: String},
   costo: {type: Number, required: true},
   categoryId: {type: mongoose.Schema.Types.ObjectId, ref:"Category"},
-  imagen: {type: String}
+  imagen: {type: String},
+  // Ubicacion opcional del evento (se marca en un mapa en el front)
+  lat: {type: Number, min: -90, max: 90},
+  lng: {type: Number, min: -180, max: 180}
 })
 
 module.exports = eventSchema
