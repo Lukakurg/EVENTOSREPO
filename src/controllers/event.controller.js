@@ -6,8 +6,10 @@ const {getEvent, createEvent, deleteEvent, updateEvent, findEvent, getEventPagin
         const {id} = req.user;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 5;
-        try{          
-            const result = await getEventPaginated(id, page, limit)
+        // Filtros opcionales (ya validados por queryMiddleware)
+        const {q, categoryId, costo, cuando} = req.query;
+        try{
+            const result = await getEventPaginated(id, page, limit, {q, categoryId, costo, cuando})
             res.status(200).json(result);
         }catch(error){
             res.status(500).json({message: "Ha ocurrido un error:", error});

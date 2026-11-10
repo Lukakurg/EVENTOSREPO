@@ -18,11 +18,13 @@ const {
 
 const payloadMiddleware = require("../middlewares/payload.middleware");
 const eventSchema = require("./validations/event.validation")
+const queryMiddleware = require("../middlewares/query.middleware");
+const eventQuerySchema = require("./validations/eventQuery.validation")
 const categorySchema = require("./validations/category.validation")
 const {changePlan} = require('../controllers/auth.controller');
  
 //EVENTS
-router.get("/events", getEventController);
+router.get("/events", queryMiddleware(eventQuerySchema), getEventController);
 
 router.get("/events/:id", getEventControllerId);
 
