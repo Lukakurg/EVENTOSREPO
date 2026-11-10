@@ -19,13 +19,15 @@ const {countEventByCategoryId} = require("../repositories/event.repository")
     };
 
     const getCategoryControllerId = async (req, res) => {
-        const eventId = req.params.id;
-        
-if (req.user.rol !== "admin") return res.status(403).json({message: "Error"})
+        const categoryId = req.params.id;
+
+        if (req.user.rol !== "admin") return res.status(403).json({message: "Error"})
         try{
-            const event = await findCategory(eventId, id)
-            if(event){
-             res.status(200).json(event)   
+            const category = await findCategory(categoryId)
+            if(category){
+                res.status(200).json(category)
+            }else{
+                res.status(404).json({message: "No se encontro la categoria"})
             }
         }catch(error){
             res.status(500).json({message: "Ha ocurrido un error: ", error})
