@@ -6,19 +6,32 @@ const healthController = (req, res) => {
     res.status(200).send("OK");
 };
 
-const getExternalEvents = require("../services/ticketmaster.service");
+const { getCotizaciones } = require("../services/cotizacion.service");
 
-const eventosExternosController = async (req, res) => {
+// GET /public/cotizacion           -> todas las tasas
+// GET /public/cotizacion?moneda=USD -> solo la de esa moneda
+const cotizacionController = async (req, res) => {
     try {
-        const eventos = await getExternalEvents(req.query.countryCode || "UY");
-        res.status(200).json(eventos);
+        const cotizacion = await getCotizaciones();
+        const moneda = req.query.moneda?.toUpperCase();
+
+        if (moneda) {
+            return res.status(200).json({
+                base: cotizacion.base,
+                moneda,
+                tasa: cotizacion.tasas[moneda],
+                actualizado: cotizacion.actualizado
+            });
+        }
+        res.status(200).json(cotizacion);
     } catch (error) {
-        res.status(500).json({ message: "Error al traer eventos externos", error: error.message });
+        // 502: el que fallo fue el servicio externo, no nuestro servidor
+        res.status(502).json({ message: "No se pudo obtener la cotizacion", error: error.message });
     }
 };
 
 module.exports = {
     pingController,
     healthController,
-    eventosExternosController   
+    cotizacionController
 };
