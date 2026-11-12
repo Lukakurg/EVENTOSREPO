@@ -9,7 +9,6 @@ const eventValidation = Joi.object({
     costo: Joi.number().min(0).required(),
     categoryId: Joi.string().required(),
     imagen: Joi.string().uri().allow("").optional(),
-    // Ubicacion opcional: latitud y longitud validas, o null si no se marco
     lat: Joi.number().min(-90).max(90).allow(null).optional(),
     lng: Joi.number().min(-180).max(180).allow(null).optional(),
 });

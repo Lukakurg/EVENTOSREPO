@@ -8,8 +8,6 @@ const healthController = (req, res) => {
 
 const { getCotizaciones } = require("../services/cotizacion.service");
 
-// GET /public/cotizacion           -> todas las tasas
-// GET /public/cotizacion?moneda=USD -> solo la de esa moneda
 const cotizacionController = async (req, res) => {
     try {
         const cotizacion = await getCotizaciones();
@@ -25,7 +23,6 @@ const cotizacionController = async (req, res) => {
         }
         res.status(200).json(cotizacion);
     } catch (error) {
-        // 502: el que fallo fue el servicio externo, no nuestro servidor
         res.status(502).json({ message: "No se pudo obtener la cotizacion", error: error.message });
     }
 };
